@@ -12,16 +12,18 @@
 
 #include <stdio.h>
 #include <setjmp.h>
+#include <stdlib.h>
 
 
-
+typedef
 struct exception
 {
    const char* fmt;
-   const int ID;
-};
+   const long ID;
+}
+Exception;
 
-#define Exception(name, fmt) struct exception name = {fmt, (int)&name}
+#define Exception(name, fmt) Exception name = {fmt, (long)&name}
 // const Exception(EXC, "EXC called with argument '%s'");
 // throw(EXC, "hello");
 
@@ -31,20 +33,10 @@ struct exception_stack
    struct exception_stack *prev;
    long ex_id;
    jmp_buf jump;
-}
-*ex_stack = 0;
+};
+extern struct exception_stack *ex_stack;
 
-
-int caught (int id, struct exception *exlist)
-{
-   while (exlist->ID != 0)
-      if ((int) exlist->ID == id)
-         return 1;
-      else
-         exlist++;
-
-   return 0;
-}
+int caught(int id, struct exception *exlist);
 
 
 /*
@@ -99,6 +91,7 @@ int caught (int id, struct exception *exlist)
         st_push(throw(ex));\
         st_trace(); exit(ex.ID);})
 
+#define assert(cond, ex, ...) if (!(cond)) throw(ex, ##__VA_ARGS__);
 /*
 try
 {
@@ -119,7 +112,6 @@ finally
 {
    //code that will run after the try block regardless of exception
 }
-
 catch;
 */
 

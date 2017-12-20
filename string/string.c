@@ -50,12 +50,25 @@ int chr_iswhite (char c)
 }
 
 
+int str_islower (char* s)
+{
+   while (*s) if (*s < 'a' || *s > 'z') return 0; else s++;
+   return 1;
+}
+
+
+int str_isupper (char* s)
+{
+   while (*s) if (*s < 'A' || *s > 'Z') return 0; else s++;
+   return 1;
+}
+
+
 
 unsigned str_length (char* s)
 {
    unsigned len = 0;
-   if (s)
-      while (s[len] != 0) len++;
+   while (s[len]) len++;
    return len;
 }
 
@@ -63,7 +76,7 @@ unsigned str_length (char* s)
 char* str_new (char* s) //char* constructor
 {
    char* mem = galloc(str_length(s) + 1);
-   for (unsigned i = 0; i < str_length(s) + 1; i++) mem[i] = s[i];
+   for (unsigned i = 0; i <= str_length(s); i++) mem[i] = s[i];
    return mem;
 }
 
@@ -74,7 +87,7 @@ char* str_lower (char* s)
 
    for (unsigned i = 0; i <= str_length(s); i++)
 
-      if (s[i] >= 0x41 && s[i] <= 0x5A)
+      if (s[i] >= 'A' && s[i] <= 'Z')
          ret[i] = s[i] + 0x20;
 
       else
@@ -90,7 +103,7 @@ char* str_upper (char* s)
 
    for (unsigned i = 0; i <= str_length(s); i++)
 
-      if (s[i] >= 0x61 && s[i] <= 0x7A)
+      if (s[i] >= 'a' && s[i] <= 'z')
          ret[i] = s[i] - 0x20;
 
       else
@@ -369,6 +382,14 @@ char* str_extend (char* a, char* b)
 }
 
 
+char* str_join(char** list)
+{
+   char* str = str_new("");
+   for (; *list; list++) str = str_extend(str, *list);
+   return str;
+}
+
+
 char* str_triml (char* s) // trim whitespace from left side
 {
    // trim forward
@@ -416,14 +437,13 @@ char* str_format (char* s, ...)
 {
    va_list args; va_start(args, s);
 
-   char* result = galloc(str_length(s)*2 + 128);
+   char* result = galloc(str_length(s)*3 + 128);
    vsprintf(result, s, args);
-
-   va_end(args);
 
    char* ret = str_new(result);
    gfree(result);
 
+   va_end(args);
    return ret;
 }
 
@@ -465,6 +485,11 @@ char* str_slicep (char* from, char* to)
    }
 
    return ret;
+}
+
+char* str_slicel (char* from, long l)
+{
+   return str_slicep(from, from+l);
 }
 
 

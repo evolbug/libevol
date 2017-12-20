@@ -15,6 +15,9 @@ int chr_isdigit (char);
 int chr_isalnum (char);
 int chr_iswhite (char);
 
+int str_isupper (char*);
+int str_islower (char*);
+
 unsigned str_length (char*);
 char*    str_new    (char*);
 
@@ -43,12 +46,14 @@ double str_to_f      (char*);
 
 char* str_concat (char*, char*);
 char* str_extend (char*, char*);
+char* str_join   (char**);
 
 char* str_triml  (char*);
 char* str_trimr  (char*);
 char* str_trim   (char*);
 char* str_slice  (char*, long from, long to);
 char* str_slicep (char* from, char* to);
+char* str_slicel (char* from, long length);
 char* str_splitl (char** last, char* delim);
 char** str_split (char*, char* delim);
 
